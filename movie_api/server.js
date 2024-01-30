@@ -19,14 +19,13 @@ console.log('My first Node test server is running on Port 8080.');
 
 const fs = require('fs');
 
-// Get current date and time
-let date = new Date();
 
-// Format date as a string
-let timestamp = date.toString();
+const fileName = `log_${timestamp}.txt`; //the timestamp data providing code - has to be in backticks!
 
-// Append timestamp to log.txt
-fs.appendFile('log.txt', timestamp + '\n', function (err) {
-  if (err) throw err;
-  console.log('Saved!');
+//1. The file to which data has to be appended 
+//2. the data -'timestamp'
+//3. New-line and error callback to detect any errors.
+fs.appendFile(fileName, timestamp + '\n', function (err) { 
+if (err) throw err;
+console.log('Saved!');
 });
