@@ -19,7 +19,7 @@
     {title: 'Pulp Fiction', director: 'Quentin Tarantino', genre: 'Crime', releaseYear: '1994'},
     {title: 'The Good, the Bad and the Ugly', director: 'Sergio Leone', genre: 'Western', releaseYear: '1966'},
     {title: 'The Lord of the Rings: The Fellowship of the Ring', director: 'Peter Jackson', genre: 'Adventure', releaseYear: '2001'},
-    {title: 'Fight Club', director: 'David Fincher', genre: 'Drama', releaseYear: '1999'}],
+    {title: 'Fight Club', director: 'David Fincher', genre: 'Drama', releaseYear: '1999'}];
 
   //route handlers
   app.get('/movies', (req, res) => {
