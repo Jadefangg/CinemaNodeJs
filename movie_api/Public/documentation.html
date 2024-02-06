@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Documentation</title>
+</head>
+<body>
+    <h1>Welcome to a Cinema API built on REST.<br>
+    It returns JSON objects as responses</h1>
+<!-- Eg. Returning movies based on title and year -->
+    <h2>GET /movies</h2>
+    <p>Returns a list of all movies.</p>
+    <h3>Parameters</h3>
+    <p>None</p>
+    <h3>Example Request</h3>
+    <pre>
+    GET /movies HTTP/1.1
+    Host: example.com
+    </pre>
+    <h3>Following is the list of movies sorted by serial no.,
+       the title and the year it was released in.
+    </h3>
+    <pre><!-- this tag keeps the format of the text exactly the same when displayed for the user -->
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+    [
+        {
+            "No.": 1,
+            "title": 'The Shawshank Redemption',
+            "year": '1994'
+        },
+        {
+            "id": 2,
+            "title": 'The Godfather',
+            "year": '1972'
+        }
+        {
+            "id": 3,
+            "title": 'The Dark Knight',
+            "year": '2008'
+        }
+        {
+            "id": 4,
+            "title": 'the Godfather: Part II',
+            "year": '1974'
+        }
+        {
+            "id": 5,
+            "title":'schindler's List',
+            "year": '1993'
+        }
+        {
+            "id": 6,
+            "title": 'The Lord of the Rings: The Return of the King',
+            "year": '2003'
+        }
+        {
+            "id": 7,
+            "title": 'Pulp Fiction',
+            "year": '1994'
+        }
+        {
+            "id": 8,
+            "title": 'The Good, the Bad and the Ugly',
+            "year": '1966'
+        }
+        {
+            "id": 9,
+            "title": 'The Lord of the Rings: The Fellowship of the Ring',
+            "year": '2001'
+        }
+        {
+            "id": 10,
+            "title": 'Fight Club',
+            "year": '1999'
+        }
+    ]
+    </pre>
+    <!-- Adding user -->
+    <tr>
+        <td>Add a user</td>
+        <td>/users</td>
+        <td>POST</td>
+        <td>
+          A JSON object holding data about the user to add, structured
+          like:<br /><br />{ 'Name': 'John Doe',<br />
+          'Username': '[username]',<br />
+          'Email': [email@example.com],<br />
+          'Birth-date': '1980-1-31' }
+        </td>
+        <td>
+          A JSON object holding data about the user that was added, including their assigned id:<br />
+          { '_id': '######',<br />
+          'Name': 'John Doe',<br />
+          'Username': '[username]',<br />
+          'Email': [email@example.com],<br />
+          'Birth-date': '1980-1-31' }
+        </td>
+      </tr>
+      <!-- Favourites for user. -->
+      <tr>
+        <td>Add a movie object to a user's favorites list</td>
+        <h2>When a PUT request is made to /users/:username/movies/:movieID, 
+            you would look up the user in your database using the username provided in the URL parameters (req.params.username). 
+            Then, you would add the movie ID provided in the URL parameters (req.params.movieID)
+             to that user's list of favorite movies in the database.</h2>
+        <td>/users/[username]/movies/[movieID]</td>
+        <td>PUT</td>
+        <td>None</td>
+        <td>
+          A text message indicating whether the movie was successfully added
+          from the user's favorited movies
+        </td>
+      </tr>
+      <!-- Removing from fvourites -->
+      <tr>
+        <td>Remove a movie from a user's favorites list</td>
+        <td>/users/[username]/movies/[movieID]</td>
+        <td>DELETE</td>
+        <td>None</td>
+        <td><!-- generic removal message -->
+         This movie has been removed from favourites.
+        </td>
+      </tr>
+
+</body>
+</html>

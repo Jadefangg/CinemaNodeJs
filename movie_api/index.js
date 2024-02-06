@@ -32,8 +32,29 @@
     res.sendFile('public/documentation.html', { root: __dirname }); //sends the documentation file to the user as response.
   });
 
-  //error handler
-  app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-  });
+// Middleware to parse JSON bodies
+app.use(express.json());
+// POST /users endpoint
+app.post('/users', (req, res) => {
+  // Code to add a new user
+  // Access the user data from req.body
+});
+// PUT /users/:username/movies/:movieID endpoint
+app.put('/users/:username/movies/:movieID', (req, res) => {
+  // Code to add a movie to a user's favorites list
+  // Access the username and movieID from req.params
+});
+// DELETE /users/:username/movies/:movieID endpoint
+app.delete('/users/:username/movies/:movieID', (req, res) => {
+  // Code to remove a movie from a user's favorites list
+  // Access the username and movieID from req.params
+});
+// Start the server
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
+//error handler - given at the end.
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
