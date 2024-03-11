@@ -1,14 +1,38 @@
- //EXPRESS APPLICATION
- 
- const express = require('express');
- const app = express();
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+const Movies = Models.Movie;  //importing the movie model from models.js
+const Users = Models.User;  //importing the user model from models.js
+const Directors = Models.Director;  //importing the director model from models.js
+const Genres = Models.Genre;  //importing the genre model from models.js
+mongoose.connect('mongodb://localhost:27017/test', //connecting to the database created previously.
+{ useNewUrlParser: true, useUnifiedTopology: true });
 
-  morgan = require('morgan');
-  app.use(morgan('dev')); // morgan for logging.
-  // 'dev' is a pre-defined log format used within morgan.
+//express  
+const express = require('express');
+const app = express();
+let auth = require('./auth')(app); //importing the auth.js file.
+const passport = require('passport');
+require('./passport'); //importing the passport.js file.
+
+//ROUTE HANDLERS
+ app.get('/movies', passport.authenticate('jwt', { session: false }), 
+ async (req, res) => {
+  await Movies.find() //mongoose being used to query the database for all the movies.
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
+morgan = require('morgan');
+app.use(morgan('dev')); // morgan for logging.
+// 'dev' is a pre-defined log format used within morgan.
 
   //movie directory for JSON object to be used in the route handler for /movies.
-  const TopMovies =
+    const TopMovies =
    [
     {id:"1", title: 'The Shawshank Redemption', director: 'Frank Darabont', genre: 'Drama', releaseYear: '1994'},
     {id:"2", title: 'The Godfather', director: 'Francis Ford Coppola', genre: 'Drama', releaseYear: '1972'},
@@ -61,4 +85,6 @@ app.listen(3000, () => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
-});
+}); 
+
+
