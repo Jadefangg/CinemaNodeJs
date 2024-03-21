@@ -16,7 +16,7 @@ let movieSchema = mongoose.Schema({
     Featured: Boolean
 });
 
-let UserSchema=mongoose.Schema({ //creating a schema for the user.
+let userSchema=mongoose.Schema({ //creating a schema for the user.
     username:{type: String, required: true},  
     password:{type: String, required: true}, 
     email:{type: String, required: true}, 
@@ -24,13 +24,13 @@ let UserSchema=mongoose.Schema({ //creating a schema for the user.
     FavoriteMovies: [{type: mongoose.Schema.Types.ObjectId, ref: 'Movie'}] //array of movie objects.
 });
 
-let GenreSchema=mongoose.Schema({ //creating a schema for the genre.
+let genreSchema=mongoose.Schema({ //creating a schema for the genre.
     _id: {type: mongoose.Schema.Types.ObjectId, ref: 'Genre',required: true},
     Name:{type: String, required: true},
     Description:{type: String, required: true}
 });
 
-let DirectorSchema=mongoose.Schema({ //creating a schema for the director.
+let directorSchema=mongoose.Schema({ //creating a schema for the director.
     _id: {type: mongoose.Schema.Types.ObjectId, ref: 'Director',required: true},
     Name:{type: String, required: true},
     Bio:{type: String, required: true},

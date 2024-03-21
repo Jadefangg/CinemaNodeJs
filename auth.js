@@ -33,5 +33,5 @@ module.exports=(router) => {
                 return res.json({user, token}); //returning the user object and the token.
             });
         })(req, res);
-    }
+    })
 }

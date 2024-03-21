@@ -10,12 +10,12 @@ mongoose.connect('mongodb://localhost:27017/test', //connecting to the database 
 //express  
 const express = require('express');
 const app = express();
-let auth = require('./auth')(app); //importing the auth.js file.
-const passport = require('passport');
-require('./passport'); //importing the passport.js file.
+//let auth = require('./auth')(app); //importing the auth.js file. [commented out for now USED FOR 2.9]
+//const passport = require('passport'); [commented out for now USED FOR 2.9]
+//require('./passport'); //importing the passport.js file. [commented out for now USED FOR 2.9]
 
 //ROUTE HANDLERS
- app.get('/movies', passport.authenticate('jwt', { session: false }), 
+ app.get('/movies', 
  async (req, res) => {
   await Movies.find() //mongoose being used to query the database for all the movies.
     .then((movies) => {
@@ -58,7 +58,21 @@ app.use(morgan('dev')); // morgan for logging.
   });
   app.put('/users/:username', (req, res) => { res.send('Successful update of user information'); });
 
+
 // Middleware to parse JSON bodies
+
+//Get a movie by its id.
+app.get('/movies/:id', async (req, res) => {
+  const id = req.params.id;
+  await Movies.findById(id)
+    .then((movie) => {
+      res.status(200).json(movie);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
 app.use(express.json());
 // POST /users endpoint
 app.post('/users', (req, res) => {
@@ -68,9 +82,13 @@ app.post('/users', (req, res) => {
   // Code to add a new user
 });
 // PUT /users/:username/movies/:movieID endpoint
-app.put('/users/:username/movies/:movieID', (req, res) => {
+app.put('/users/:username/movies/:movieid', (req, res) => {
   // Code to add a movie to a user's favorites list
   // Access the username and movieID from req.params
+});
+//DELETE a movie bu movieID.
+app.delete('/movies/:id', (req, res) => {
+  res.send('Successful deletion of movie');
 });
 // DELETE /users/:username/movies/:movieID endpoint
 app.delete('/users/:username/movies/:movieID', (req, res) => {
