@@ -1,24 +1,40 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
+//const bcrypt = require('bcryptjs');
 const app = express();
 app.use(express.json()); //middleware function to parse the request body and convert it into a JSON object.
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const Movies = Models.Movie;  //importing the Movie model from models.js
-const Users = Models.User;  //importing the user model from models.js
+const Users = Models.Users;  //importing the user model from models.js
 const Directors = Models.Director;  //importing the director model from models.js
 const Genres = Models.Genre;  //importing the genre model from models.js
+const { check, validationResult } = require('express-validator');
 mongoose.connect('mongodb://localhost:27017/test', //connecting to the database created previously.
 { useNewUrlParser: true, useUnifiedTopology: true });
+const cors = require('cors');
+app.use(cors());
 let auth = require('./auth')(app); //importing the auth.js file. [commented out for now USED FOR 2.9]
 const passport = require('passport'); //[commented out for now USED FOR 2.9]
 require('./passport'); //importing the passport.js file. [commented out for now USED FOR 2.9]
 
+//CORS POLICY*
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com']; //list of allowed origins
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 //ROUTE HANDLERS
 //JWT authentication>
 app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Movies.find()
+  await Movies.find() 
     .then((movies) => {
       res.status(201).json(TopMoviesmovies);
     })
@@ -72,8 +88,8 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), async (req,
 // POST /users endpoint
 
 
-
-app.post('/users', (req, res) => {
+//Adding a POST user endpoint so user can be accesses for the POST login endpoint.
+/*app.post('/users', (req, res) => {
   // Hash the password
   bcrypt.hash(req.body.password, 10)
     .then(hash => {
@@ -87,6 +103,63 @@ app.post('/users', (req, res) => {
         console.error(error);
         res.status(500).send('Error: ' + error);
       });
+    });
+});*/
+app.post('/users',[
+  //validation logic here for request
+  check('Username', 'Username is required').isLength({min: 5}),
+  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('Password', 'Password is required').not().isEmpty(),
+  check('Email', 'Email does not appear to be valid').isEmail()
+   ],
+ async (req, res) => {// check the validation object for errors
+  let errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+  
+  let hashedPassword = Users.hashPassword(req.body.Password);
+  await Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
+    .then((user) => {
+      if (user) {
+      //If the user is found, send a response that it already exists
+        return res.status(400).send(req.body.Username + ' already exists');
+      } else {
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: hashedPassword,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) => { res.status(201).json(user) })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+          });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
+app.get('/users/:username', (req, res) => {
+  Users.findOne({ username: req.params.username })
+    .then(user => {
+      if (!user) {
+        // User not found
+        return res.status(404).send('User not found');
+      }
+
+      // User found
+      res.json(user);
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
     });
 });
 
@@ -108,8 +181,10 @@ app.delete('/users/:username/movies/:movieID', passport.authenticate('jwt', { se
 });
 */
 // Start the server
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
 });
 
 //error handler - given at the end.
