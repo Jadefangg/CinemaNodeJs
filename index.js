@@ -9,8 +9,13 @@ const Users = Models.Users;  //importing the user model from models.js
 const Directors = Models.Director;  //importing the director model from models.js
 const Genres = Models.Genre;  //importing the genre model from models.js
 const { check, validationResult } = require('express-validator');
-mongoose.connect('mongodb://localhost:27017/test', //connecting to the database created previously.
-{ useNewUrlParser: true, useUnifiedTopology: true });
+//mongoose.connect('mongodb://localhost:27017/test', //connecting to the database created previously.
+//{ useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connect('process.env.CONNECTION_URI',
+{ useNewUrlParser: true, useUnifiedTopology: true });//NEW MONGOOSE CONNECTION STRING.
+//ANYONE CAN ACCESS THE API WHEN THEY SEE THIS MONGOOSE CONNECTION STRING. SO YOU USE ENVIRONMENT VARIABLES TO HIDE THE CONNECTION STRING.
+
 const cors = require('cors');
 app.use(cors());
 let auth = require('./auth')(app); //importing the auth.js file. [commented out for now USED FOR 2.9]
