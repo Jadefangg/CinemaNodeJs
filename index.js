@@ -1,3 +1,8 @@
+//mongodb+srv://sartajsingh8:<password>@myflixdb.w89div2.mongodb.net/?retryWrites=true&w=majority&appName=myFlixDB 
+// ^^^^^ connection string for the MongoDB Atlas cluster.^^^^^ 
+//vtYlsoN9rrDGsb3P <<<< MongoDB Atlas password
+//hidden-wave-07388 <<<< Heroku app name
+
 const express = require('express');
 //const bcrypt = require('bcryptjs');
 const app = express();
@@ -9,11 +14,11 @@ const Users = Models.Users;  //importing the user model from models.js
 const Directors = Models.Director;  //importing the director model from models.js
 const Genres = Models.Genre;  //importing the genre model from models.js
 const { check, validationResult } = require('express-validator');
-//mongoose.connect('mongodb://localhost:27017/test', //connecting to the database created previously.
+//mongoose.connect('bb://localhost:27017/test', //connecting to the database created previously.
 //{ useNewUrlParser: true, useUnifiedTopology: true });
 
-mongoose.connect('process.env.CONNECTION_URI',
-{ useNewUrlParser: true, useUnifiedTopology: true });//NEW MONGOOSE CONNECTION STRING.
+//console.log(typeof process.env.CONNECTION_URI); // < checking if the connection string is a string.
+mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });//NEW MONGOOSE CONNECTION STRING.
 //ANYONE CAN ACCESS THE API WHEN THEY SEE THIS MONGOOSE CONNECTION STRING. SO YOU USE ENVIRONMENT VARIABLES TO HIDE THE CONNECTION STRING.
 
 const cors = require('cors');
@@ -23,8 +28,7 @@ const passport = require('passport'); //[commented out for now USED FOR 2.9]
 require('./passport'); //importing the passport.js file. [commented out for now USED FOR 2.9]
 
 //CORS POLICY*
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com']; //list of allowed origins
-
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'https://hidden-wave-07388.herokuapp.com'];
 app.use(cors({
   origin: (origin, callback) => {
     if(!origin) return callback(null, true);
@@ -150,6 +154,17 @@ app.post('/users',[
       res.status(500).send('Error: ' + error);
     });
 });
+//GET ALL USERS.
+app.get ('/users',passport.authenticate('jwt', { session: false }), async (req, res) => {
+  await Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
 
 app.get('/users/:username', (req, res) => {
   Users.findOne({ username: req.params.username })
@@ -185,11 +200,12 @@ app.delete('/users/:username/movies/:movieID', passport.authenticate('jwt', { se
   // Access the username and movieID from req.params
 });
 */
+
 // Start the server
 
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
+ console.log('Listening on Port, server is running  through const port ' + port);
 });
 
 //error handler - given at the end.

@@ -7,11 +7,13 @@ let Users = Models.User,
   JWTStrategy = passportJWT.Strategy,
   ExtractJWT = passportJWT.ExtractJwt;
 
+ //passport local strategy is told to look for fields named Username and Password in the request body to find the users credentials.
+ //These keys are case sensitive! So in postman, use 'Username' and 'Password' as keys in the body. This is important!
   passport.use(
     new LocalStrategy(
       {
-        usernameField: 'Username',
-        passwordField: 'Password',
+        usernameField: 'Username',  //<<
+        passwordField: 'Password',  //<<
       },
       async (username, password, callback) => {
         console.log(`${username} ${password}`);
